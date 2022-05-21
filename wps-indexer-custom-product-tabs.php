@@ -16,15 +16,15 @@ add_filter( 'woocommerce_product_search_indexer_filter_content', 'custom_tabs_wo
 function custom_tabs_woocommerce_product_search_index( $content, $context, $post_id ) {
 	if ( $context === 'post_content' ) {
 		$product = wc_get_product( $post_id );
-		$custom_tab_data = $product->get_meta( 'yikes_woo_products_tabs' );
+		$custom_tab_data = maybe_unserialize( $product->get_meta( 'yikes_woo_products_tabs' ) );
 		if ( is_array( $custom_tab_data ) && ! empty( $custom_tab_data ) ) {
 			foreach ( $custom_tab_data as $tab ) {
 				if ( !empty( $tab['content'] ) ) {
-					$content .= ' ' . $tab['content'];
+					$strip_table_tags = str_replace( '><', '> <', $tab['content'] );
+					$content .= ' ' . $strip_table_tags;
 				}
 			}
 		}
 	}
 	return $content;
 }
-
